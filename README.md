@@ -1,6 +1,5 @@
 # 🚀 Golang Backend Starter Kit
 
-![Swagger](./docs/swagger.png)
 
 [![Go Version](https://img.shields.io/badge/Go-1.24+-00ADD8?style=for-the-badge&logo=go&logoColor=white)](https://go.dev/)
 [![Gin Framework](https://img.shields.io/badge/Gin-v1.10.0-008080?style=for-the-badge&logo=gin&logoColor=white)](https://gin-gonic.com/)
@@ -109,6 +108,7 @@ Kelola dan uji API secara interaktif melalui Swagger UI. Setelah aplikasi berjal
 
 👉 [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
 
+![Swagger](./docs/swagger.png)
 ---
 
 ## 🛡️ Keamanan & Kualitas
