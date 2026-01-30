@@ -113,11 +113,23 @@ Kelola dan uji API secara interaktif melalui Swagger UI. Setelah aplikasi berjal
 
 ## 🛡️ Keamanan & Kualitas
 
-Kami mengutamakan keamanan dan kualitas kode:
+Kami mengutamakan keamanan dan kualitas kode dengan alat bantu otomatis:
 
-- **Audit Keamanan:** `make audit` untuk memeriksa kerentanan dependensi.
+- **Audit Keamanan:** `make audit` untuk memeriksa kerentanan dependensi menggunakan `govulncheck`.
 - **Linting:** `make lint` untuk memastikan standar penulisan kode Go.
 - **Testing:** `make test` untuk menjalankan seluruh unit test dengan *race detection*.
+
+### 🔍 Mengenal `make audit`
+Perintah ini sangat penting untuk menjaga aplikasi tetap aman. Ia akan memindai seluruh *database* kerentanan Go yang diketahui dan mencocokkannya dengan kode Anda.
+
+![Audit Keamanan](./docs/audit.png)
+
+**Apa yang harus dilakukan jika ditemukan kerentanan (Vulnerability)?**
+Jika hasil audit menunjukkan adanya masalah (berwarna merah), jangan panik! Ikuti langkah berikut:
+1. **Identifikasi Vulnerability:** Lihat ID yang diawali dengan `GO-20XX-XXXX`.
+2. **Update Versi:** Coba jalankan `go get -u ./...` dan `go mod tidy` untuk memperbarui dependensi ke versi terbaru yang sudah menambal celah tersebut.
+3. **Cari Solusi:** Cari ID vulnerability tersebut di forum komunitas atau Google.
+4. **Tanya AI:** Anda bisa menyalin detail log audit tersebut dan menanyakannya ke Chat AI (seperti ChatGPT atau Claude) untuk mendapatkan langkah perbaikan teknis yang lebih mendalam.
 
 ---
 
