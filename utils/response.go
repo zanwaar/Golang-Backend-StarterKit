@@ -14,7 +14,7 @@ type Response struct {
 	Meta    interface{} `json:"meta,omitempty"`
 }
 
-func APIResponse(ctx *gin.Context, message string, statusCode int, data interface{}, errors interface{}, meta interface{}) {
+func APIResponse(ctx *gin.Context, message string, statusCode int, data, errors, meta interface{}) {
 	jsonResponse := Response{
 		Success: statusCode >= 200 && statusCode < 300,
 		Message: message,
@@ -27,7 +27,8 @@ func APIResponse(ctx *gin.Context, message string, statusCode int, data interfac
 }
 
 func SuccessResponse(ctx *gin.Context, message string, data interface{}) {
-	APIResponse(ctx, message, http.StatusOK, data, nil, nil) // Meta handled by BuildMeta if needed, but for simple success it's nil
+	// Meta handled by BuildMeta if needed, but for simple success it's nil
+	APIResponse(ctx, message, http.StatusOK, data, nil, nil)
 }
 
 func CreatedResponse(ctx *gin.Context, message string, data interface{}) {
@@ -38,6 +39,6 @@ func ErrorResponse(ctx *gin.Context, message string, statusCode int, errors inte
 	APIResponse(ctx, message, statusCode, nil, errors, nil) // Meta usually nil for errors
 }
 
-func PaginatedResponse(ctx *gin.Context, message string, data interface{}, meta interface{}) {
+func PaginatedResponse(ctx *gin.Context, message string, data, meta interface{}) {
 	APIResponse(ctx, message, http.StatusOK, data, nil, meta)
 }

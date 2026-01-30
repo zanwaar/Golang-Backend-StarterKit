@@ -80,7 +80,7 @@ fmt:
 # Lint code (requires: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest)
 lint:
 	@echo "🔍 Linting code..."
-	golangci-lint run ./...
+	$(shell go env GOPATH)/bin/golangci-lint run ./...
 
 # Vet code
 vet:

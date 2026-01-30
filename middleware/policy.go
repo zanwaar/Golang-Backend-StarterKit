@@ -11,7 +11,7 @@ import (
 // Policy helpers to mimic Laravel's Authorization policies
 // In Go, we can't easily use Traits, but we can use helper functions.
 
-func Authorize(ctx *gin.Context, action string, module string) error {
+func Authorize(ctx *gin.Context, action, module string) error {
 	currentUser, exists := ctx.Get("currentUser")
 	if !exists {
 		return errors.New("unauthorized")
@@ -54,7 +54,7 @@ func AuthorizeDelete(ctx *gin.Context, module string) error {
 }
 
 // Helper to handle the error response automatically if desired, similar to Abort API
-func EnsurePermission(ctx *gin.Context, action string, module string) bool {
+func EnsurePermission(ctx *gin.Context, action, module string) bool {
 	if err := Authorize(ctx, action, module); err != nil {
 		ctx.JSON(http.StatusForbidden, gin.H{
 			"success": false,

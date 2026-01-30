@@ -31,7 +31,7 @@ func BuildMeta(pagination Pagination, executionTime float64) map[string]interfac
 	}
 }
 
-func GetPaginationParams(ctx *gin.Context) (page int, perPage int) {
+func GetPaginationParams(ctx *gin.Context) (page, perPage int) {
 	pageStr := ctx.DefaultQuery("page", "1")
 	perPageStr := ctx.DefaultQuery("per_page", "15")
 
@@ -51,7 +51,7 @@ func GetPaginationParams(ctx *gin.Context) (page int, perPage int) {
 	return page, perPage
 }
 
-func CalculatePagination(total int64, page int, perPage int) Pagination {
+func CalculatePagination(total int64, page, perPage int) Pagination {
 	lastPage := int(math.Ceil(float64(total) / float64(perPage)))
 	if lastPage < 1 {
 		lastPage = 1

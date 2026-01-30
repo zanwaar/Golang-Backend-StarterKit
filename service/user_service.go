@@ -40,7 +40,8 @@ func (s *userService) Login(req dto.UserLoginRequest) (string, error) {
 		return "", errors.New("email not verified")
 	}
 
-	if err := utils.CheckPassword(req.Password, user.Password); err != nil {
+	err = utils.CheckPassword(req.Password, user.Password)
+	if err != nil {
 		return "", errors.New("invalid email or password")
 	}
 

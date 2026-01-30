@@ -37,7 +37,9 @@ func SeedRolesAndPermissions(db *gorm.DB) {
 
 		// Assign permissions to admin
 		if roleName == "admin" {
-			db.Model(role).Association("Permissions").Replace(createdPermissions)
+			if err := db.Model(role).Association("Permissions").Replace(createdPermissions); err != nil {
+				log.Printf("Failed to replace permissions for role %s: %v", roleName, err)
+			}
 		}
 	}
 

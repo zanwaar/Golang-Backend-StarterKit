@@ -1,0 +1,42 @@
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - revive
+    - goimports
+    - misspell
+    - unparam
+    - nakedret
+    - prealloc
+    - copyloopvar
+    - gocritic
+
+linters-settings:
+  govet:
+    enable:
+      - shadow
+  revive:
+    rules:
+      - name: line-length-limit
+        arguments: [150]
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+    disabled-checks:
+      - wrapperFunc
+
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+run:
+  timeout: 5m
+  tests: true

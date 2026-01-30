@@ -13,7 +13,7 @@ type UserRepository interface {
 	FindByEmail(email string) (*entity.User, error)
 	Create(user *entity.User) error
 	Update(user *entity.User) error
-	Paginate(filters map[string]interface{}, page int, perPage int) (*utils.PaginationResult, error)
+	Paginate(filters map[string]interface{}, page, perPage int) (*utils.PaginationResult, error)
 }
 
 type userRepository struct {
@@ -38,7 +38,7 @@ func (r *userRepository) Update(user *entity.User) error {
 	return r.db.Save(user).Error
 }
 
-func (r *userRepository) Paginate(filters map[string]interface{}, page int, perPage int) (*utils.PaginationResult, error) {
+func (r *userRepository) Paginate(filters map[string]interface{}, page, perPage int) (*utils.PaginationResult, error) {
 	var users []entity.User
 	var total int64
 	query := r.db.Model(&entity.User{})
@@ -110,7 +110,7 @@ func (r *userRepository) applySmartSearch(query *gorm.DB, searchTerm string) {
 
 func (r *userRepository) shouldUseFullText(searchTerm string) bool {
 	// Simple heuristic: length >= 3 and not purely numeric
-	return len(searchTerm) >= 3 && !regexp.MustCompile(`^[0-9]+$`).MatchString(searchTerm)
+	return len(searchTerm) >= 3 && !regexp.MustCompile(`^\d+$`).MatchString(searchTerm)
 }
 
 func (r *userRepository) applyFullTextSearch(query *gorm.DB, searchTerm string) {

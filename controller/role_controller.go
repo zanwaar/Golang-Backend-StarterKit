@@ -119,7 +119,10 @@ func (rc *RoleController) AssignRoleToUser(c *gin.Context) {
 		return
 	}
 
-	rc.DB.Model(&user).Association("Roles").Append(&role)
+	if err := rc.DB.Model(&user).Association("Roles").Append(&role); err != nil {
+		utils.ErrorResponse(c, "Failed to assign role", http.StatusInternalServerError, nil)
+		return
+	}
 
 	utils.SuccessResponse(c, "Role assigned successfully", nil)
 }
@@ -158,7 +161,10 @@ func (rc *RoleController) AssignPermissionToRole(c *gin.Context) {
 		return
 	}
 
-	rc.DB.Model(&role).Association("Permissions").Append(&permission)
+	if err := rc.DB.Model(&role).Association("Permissions").Append(&permission); err != nil {
+		utils.ErrorResponse(c, "Failed to assign permission", http.StatusInternalServerError, nil)
+		return
+	}
 
 	utils.SuccessResponse(c, "Permission assigned to role successfully", nil)
 }
