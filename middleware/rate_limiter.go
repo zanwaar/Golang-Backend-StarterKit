@@ -51,7 +51,7 @@ func (i *IPRateLimiter) GetLimiter(ip string) *rate.Limiter {
 	return limiter.(*rate.Limiter)
 }
 
-func (u *UserRateLimiter) GetLimiter(userID uint) *rate.Limiter {
+func (u *UserRateLimiter) GetLimiter(userID string) *rate.Limiter {
 	u.mu.Lock()
 	defer u.mu.Unlock()
 
@@ -82,7 +82,7 @@ func RateLimiterMiddleware() gin.HandlerFunc {
 		// Check User Limit if authenticated
 		userID, exists := c.Get("user_id")
 		if exists {
-			if !userLimiter.GetLimiter(userID.(uint)).Allow() {
+			if !userLimiter.GetLimiter(userID.(string)).Allow() {
 				utils.ErrorResponse(c, "Too Many Requests", http.StatusTooManyRequests, "User rate limit exceeded")
 				c.Abort()
 				return
