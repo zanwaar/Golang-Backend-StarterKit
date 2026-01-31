@@ -23,6 +23,27 @@ type Product struct {
 }
 ```
 
+### Langkah 1.5: Buat DTO (Request/Response)
+Buat file `dto/product_dto.go` untuk mendefinisikan struktur data yang masuk (Request) dan keluar (Response) API. Pisahkan dari Entity database.
+
+```go
+package dto
+
+type CreateProductRequest struct {
+    Name        string  `json:"name" binding:"required"`
+    Description string  `json:"description"`
+    Price       float64 `json:"price" binding:"required,gt=0"`
+    Stock       int     `json:"stock" binding:"required,gte=0"`
+}
+
+type ProductResponse struct {
+    ID          string  `json:"id"`
+    Name        string  `json:"name"`
+    Price       float64 `json:"price"`
+    Stock       int     `json:"stock"`
+}
+```
+
 ### Langkah 2: Buat Repository (Akses Data)
 Buat file `repository/product_repository.go`. Gunakan interface dan implementasi struct.
 
