@@ -225,3 +225,49 @@ File log otomatis dirotasi oleh library `lumberjack` dengan aturan:
 *   **Max Backups**: 5 File
 *   **Max Age**: 30 Hari
 *   **Kompresi**: `.gz` (File lama dikompres otomatis)
+---
+
+## 6. Migrasi Database (GORM AutoMigrate)
+
+Proyek ini menggunakan fitur `AutoMigrate` dari GORM untuk sinkronisasi skema database. Migrasi dikelola di dalam folder `migrations/`.
+
+### Cara Menambah Tabel Baru:
+1.  **Buat Entity**: Tambahkan struct di folder `entity/` (misal: `Product`).
+2.  **Daftarkan di Migrations**: Buka `migrations/migrate.go` atau buat file baru di `migrations/` jika memerlukan logika SQL manual (seperti Full-Text Search index).
+3.  **Panggil Fungsi**: Pastikan fungsi migrasi dipanggil di dalam `RunMigrations`.
+
+Contoh menambah index manual di `migrations/product.go`:
+```go
+func migrateProducts(db *gorm.DB) {
+    db.AutoMigrate(&entity.Product{})
+    // Contoh add index manual jika dibutuhkan
+    db.Exec("CREATE INDEX IF NOT EXISTS idx_products_name ON products(name)")
+}
+```
+
+### Eksekusi:
+Jalankan di terminal:
+```bash
+make db-migrate
+```
+
+---
+
+## 7. Database Seeding (Data Awal)
+
+Seeder digunakan untuk mengisi data default aplikasi (Super Admin, Master Roles, dll). Logika seeder berada di `utils/seed.go`.
+
+### Alur Seeder:
+1.  **SeedRolesAndPermissions**: Membuat daftar role (`admin`, `user`) dan permission.
+2.  **SeedUsers**: Membuat akun Super Admin default dan beberapa user dummy untuk testing.
+
+### Menambah Data Baru:
+Buka `utils/seed.go` dan tambahkan logika menggunakan `db.FirstOrCreate` agar tidak terjadi duplikasi saat seeder dijalankan berulang kali.
+
+### Eksekusi:
+Jalankan di terminal:
+```bash
+make db-seed
+```
+
+> **Catatan**: Selalu jalankan `make db-migrate` terlebih dahulu sebelum `make db-seed` untuk memastikan struktur tabel sudah siap.
