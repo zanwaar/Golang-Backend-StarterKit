@@ -216,9 +216,19 @@ func (c *UserController) ResendResetPasswordCode(ctx *gin.Context) {
 // @Failure      401  {object} utils.Response
 // @Router       /me [get]
 func (c *UserController) Me(ctx *gin.Context) {
-	// For now, just return the user ID from context as proof of auth
-	userID, _ := ctx.Get("user_id")
-	utils.SuccessResponse(ctx, "User details", gin.H{"user_id": userID})
+	userID, exists := ctx.Get("user_id")
+	if !exists {
+		utils.ErrorResponse(ctx, "Unauthorized", http.StatusUnauthorized, nil)
+		return
+	}
+
+	userResponse, err := c.service.GetMe(userID.(string))
+	if err != nil {
+		utils.ErrorResponse(ctx, "Failed to fetch user", http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(ctx, "User details", userResponse)
 }
 
 // GetUsers godoc
@@ -270,4 +280,62 @@ func (c *UserController) GetUsers(ctx *gin.Context) {
 
 	meta := utils.BuildMeta(result.Pagination, 0) // Execution time 0 or calculate it
 	utils.PaginatedResponse(ctx, "Users retrieved successfully", result.Items, meta)
+}
+
+// Setup2FA godoc
+// @Summary      Setup 2FA
+// @Description  Generate 2FA secret and QR code
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object} utils.Response{data=dto.Setup2FAResponse}
+// @Failure      400  {object} utils.Response
+// @Router       /2fa/setup [post]
+func (c *UserController) Setup2FA(ctx *gin.Context) {
+	userID, exists := ctx.Get("user_id")
+	if !exists {
+		utils.ErrorResponse(ctx, "Unauthorized", http.StatusUnauthorized, nil)
+		return
+	}
+
+	response, err := c.service.Setup2FA(userID.(string))
+	if err != nil {
+		utils.ErrorResponse(ctx, "Failed to setup 2FA", http.StatusBadRequest, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(ctx, "2FA Setup Initiated", response)
+}
+
+// Verify2FA godoc
+// @Summary      Verify 2FA
+// @Description  Verify 2FA code and enable 2FA
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        input body dto.Verify2FARequest true "Verification Code"
+// @Success      200  {object} utils.Response
+// @Failure      400  {object} utils.Response
+// @Router       /2fa/verify [post]
+func (c *UserController) Verify2FA(ctx *gin.Context) {
+	userID, exists := ctx.Get("user_id")
+	if !exists {
+		utils.ErrorResponse(ctx, "Unauthorized", http.StatusUnauthorized, nil)
+		return
+	}
+
+	var input dto.Verify2FARequest
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		utils.ErrorResponse(ctx, "Validation Failed", http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := c.service.Verify2FA(userID.(string), input.Code); err != nil {
+		utils.ErrorResponse(ctx, "Verification Failed", http.StatusBadRequest, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(ctx, "2FA Verified and Enabled", nil)
 }

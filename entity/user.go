@@ -13,6 +13,8 @@ type User struct {
 	VerificationCode string `gorm:"type:varchar(6)"`
 	ResetToken       string `gorm:"type:varchar(6)"`
 	ResetTokenExpiry time.Time
+	IsTwoFAEnabled   bool    `gorm:"default:false"`
+	TwoFASecret      string  `gorm:"type:varchar(100)"`
 	Roles            []*Role `gorm:"many2many:user_roles;"`
 }
 

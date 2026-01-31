@@ -18,6 +18,7 @@ Proyek ini dirancang untuk menjadi fondasi *production-ready* bagi aplikasi mode
 | :--- | :--- |
 | **🆔 ULID** | Menggunakan *Universally Unique Lexicographical Sortable Identifier* untuk ID yang unik dan terurut secara kronologis. |
 | **🔐 Auth & RBAC** | Otentikasi JWT dengan Full Role-Based Access Control (RBAC) dan Policy-based Authorization. |
+| **📱 2FA** | Dukungan Two-Factor Authentication (TOTP) kompatibel dengan Google Authenticator/Authy. |
 | **🛡️ Security** | Terintegrasi dengan Rate Limiting (per IP & User), CORS, `bcrypt` hashing, dan audit keamanan otomatis. |
 | **📧 Email System** | Alur verifikasi email dan reset password (Lupa Kata Sandi) yang siap pakai via SMTP. |
 | **📊 Smart Search** | Paginasi cerdas dengan Full-Text Search dan pemfilteran otomatis pada semua endpoint list. |
@@ -35,6 +36,7 @@ Proyek ini dirancang untuk menjadi fondasi *production-ready* bagi aplikasi mode
 - **Database:** [PostgreSQL](https://www.postgresql.org/)
 - **IDs:** [ULID](https://github.com/oklog/ulid)
 - **Email:** [Gomail.v2](https://github.com/go-gomail/gomail)
+- **2FA:** [pquerna/otp](https://github.com/pquerna/otp)
 - **Docs:** [Swagger (swag)](https://github.com/swaggo/swag)
 
 ---
@@ -136,7 +138,8 @@ Jika hasil audit menunjukkan adanya masalah (berwarna merah), jangan panik! Ikut
 ## 🔗 Panduan Lanjutan
 
 - 📘 **[Panduan Pengembangan](./GUIDE_PENGEMBANGAN.md)**: Cara menambah fitur, model, dan aturan bisnis baru.
-- � **[Optimasi Database](./GUIDE_OPTIMASI_DATABASE.md)**: Panduan indexing dan performa query.
+- 📱 **[Panduan 2FA](./GUIDE_2FA.md)**: Langkah integrasi dan penggunaan fitur Two-Factor Authentication.
+- ⚡ **[Optimasi Database](./GUIDE_OPTIMASI_DATABASE.md)**: Panduan indexing dan performa query.
 
 ---
 

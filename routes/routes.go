@@ -32,6 +32,8 @@ func SetupRoutes(app *gin.Engine, userCtrl *controller.UserController, roleCtrl 
 	protected.Use(middleware.AuthMiddleware())
 	protected.GET("/me", userCtrl.Me)
 	protected.GET("/users", userCtrl.GetUsers)
+	protected.POST("/2fa/setup", userCtrl.Setup2FA)
+	protected.POST("/2fa/verify", userCtrl.Verify2FA)
 
 	admin := protected.Group("/admin")
 	admin.Use(middleware.RoleAuthMiddleware("admin"))

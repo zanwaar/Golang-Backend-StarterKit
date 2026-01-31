@@ -1,12 +1,17 @@
 package service
 
 import (
+	"bytes"
+	"encoding/base64"
 	"errors"
 	"golang-backend/dto"
 	"golang-backend/entity"
 	"golang-backend/repository"
 	"golang-backend/utils"
+	"image/png"
 	"time"
+
+	"github.com/pquerna/otp/totp"
 )
 
 type UserService interface {
@@ -18,10 +23,27 @@ type UserService interface {
 	ResendVerificationCode(email string) error
 	ResendResetPasswordCode(email string) error
 	GetUsers(filters map[string]interface{}, page, perPage int) (*utils.PaginationResult, error)
+	Setup2FA(userID string) (*dto.Setup2FAResponse, error)
+	Verify2FA(userID string, code string) error
+	GetMe(userID string) (*dto.UserResponse, error)
 }
 
 type userService struct {
 	repo repository.UserRepository
+}
+
+func (s *userService) GetMe(userID string) (*dto.UserResponse, error) {
+	user, err := s.repo.FindByID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.UserResponse{
+		ID:             user.ID,
+		Name:           user.Name,
+		Email:          user.Email,
+		IsTwoFAEnabled: user.IsTwoFAEnabled,
+	}, nil
 }
 
 func NewUserService(repo repository.UserRepository) UserService {
@@ -45,6 +67,15 @@ func (s *userService) Login(req dto.UserLoginRequest) (string, error) {
 	err = utils.CheckPassword(req.Password, user.Password)
 	if err != nil {
 		return "", errors.New("invalid email or password")
+	}
+
+	if user.IsTwoFAEnabled {
+		if req.TwoFACode == "" {
+			return "", errors.New("2FA code required")
+		}
+		if !totp.Validate(req.TwoFACode, user.TwoFASecret) {
+			return "", errors.New("invalid 2FA code")
+		}
 	}
 
 	token, err := utils.GenerateToken(user.ID)
@@ -183,4 +214,55 @@ func (s *userService) ResendVerificationCode(email string) error {
 func (s *userService) ResendResetPasswordCode(email string) error {
 	// Functionally same as ForgotPassword
 	return s.ForgotPassword(email)
+}
+
+func (s *userService) Setup2FA(userID string) (*dto.Setup2FAResponse, error) {
+	user, err := s.repo.FindByID(userID)
+	if err != nil {
+		return nil, errors.New("user not found")
+	}
+
+	key, err := totp.Generate(totp.GenerateOpts{
+		Issuer:      "GolangBackend",
+		AccountName: user.Email,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var buf bytes.Buffer
+	img, err := key.Image(200, 200)
+	if err != nil {
+		return nil, err
+	}
+	png.Encode(&buf, img)
+	qrCodeURL := "data:image/png;base64," + base64.StdEncoding.EncodeToString(buf.Bytes())
+
+	user.TwoFASecret = key.Secret()
+	if err := s.repo.Update(user); err != nil {
+		return nil, err
+	}
+
+	return &dto.Setup2FAResponse{
+		Secret:    key.Secret(),
+		QRCodeURL: qrCodeURL,
+	}, nil
+}
+
+func (s *userService) Verify2FA(userID string, code string) error {
+	user, err := s.repo.FindByID(userID)
+	if err != nil {
+		return errors.New("user not found")
+	}
+
+	if user.TwoFASecret == "" {
+		return errors.New("2FA not setup")
+	}
+
+	if !totp.Validate(code, user.TwoFASecret) {
+		return errors.New("invalid code")
+	}
+
+	user.IsTwoFAEnabled = true
+	return s.repo.Update(user)
 }

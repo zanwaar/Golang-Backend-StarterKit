@@ -55,11 +55,20 @@ definitions:
     - email
     - new_password
     type: object
+  dto.Setup2FAResponse:
+    properties:
+      qr_code_url:
+        type: string
+      secret:
+        type: string
+    type: object
   dto.UserLoginRequest:
     properties:
       email:
         type: string
       password:
+        type: string
+      two_fa_code:
         type: string
     required:
     - email
@@ -85,10 +94,19 @@ definitions:
         type: string
       id:
         type: string
+      is_two_fa_enabled:
+        type: boolean
       name:
         type: string
       token:
         type: string
+    type: object
+  dto.Verify2FARequest:
+    properties:
+      code:
+        type: string
+    required:
+    - code
     type: object
   dto.VerifyEmailRequest:
     properties:
@@ -140,6 +158,60 @@ info:
   title: Golang Backend API
   version: "1.0"
 paths:
+  /2fa/setup:
+    post:
+      consumes:
+      - application/json
+      description: Generate 2FA secret and QR code
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.Setup2FAResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Setup 2FA
+      tags:
+      - auth
+  /2fa/verify:
+    post:
+      consumes:
+      - application/json
+      description: Verify 2FA code and enable 2FA
+      parameters:
+      - description: Verification Code
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.Verify2FARequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Verify 2FA
+      tags:
+      - auth
   /admin/assign-permission:
     post:
       consumes:
