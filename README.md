@@ -1,7 +1,7 @@
 # 🚀 Golang Backend Starter Kit
 
 
-[![Go Version](https://img.shields.io/badge/Go-1.24+-00ADD8?style=for-the-badge&logo=go&logoColor=white)](https://go.dev/)
+[![Go Version](https://img.shields.io/badge/Go-1.25+-00ADD8?style=for-the-badge&logo=go&logoColor=white)](https://go.dev/)
 [![Gin Framework](https://img.shields.io/badge/Gin-v1.10.0-008080?style=for-the-badge&logo=gin&logoColor=white)](https://gin-gonic.com/)
 [![GORM](https://img.shields.io/badge/GORM-v1.25.12-3B79C4?style=for-the-badge&logo=gopher&logoColor=white)](https://gorm.io/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
@@ -29,7 +29,7 @@ Proyek ini dirancang untuk menjadi fondasi *production-ready* bagi aplikasi mode
 
 ## 🛠️ Tech Stack
 
-- **Languange:** [Go](https://go.dev/) (v1.24+)
+- **Languange:** [Go](https://go.dev/) (v1.25+)
 - **Web Framework:** [Gin Web Framework](https://gin-gonic.com/)
 - **ORM:** [GORM](https://gorm.io/)
 - **Database:** [PostgreSQL](https://www.postgresql.org/)
@@ -63,7 +63,7 @@ Proyek ini dirancang untuk menjadi fondasi *production-ready* bagi aplikasi mode
 ## ⚡ Memulai Cepat (Quick Start)
 
 ### 📋 Prasyarat
-- **Go 1.24+**
+- **Go 1.25+** (Disarankan demi keamanan maksimal)
 - **PostgreSQL**
 - **Air** (untuk hot reload: `go install github.com/cosmtrek/air@latest`)
 
