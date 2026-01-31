@@ -25,6 +25,8 @@ func SetupRoutes(app *gin.Engine, userCtrl *controller.UserController, roleCtrl 
 	api.POST("/verify-email", userCtrl.VerifyEmail)
 	api.POST("/forgot-password", userCtrl.ForgotPassword)
 	api.POST("/reset-password", userCtrl.ResetPassword)
+	api.POST("/resend-verification", userCtrl.ResendVerificationCode)
+	api.POST("/resend-reset-code", userCtrl.ResendResetPasswordCode)
 
 	protected := api.Group("/")
 	protected.Use(middleware.AuthMiddleware())

@@ -153,6 +153,58 @@ func (c *UserController) ResetPassword(ctx *gin.Context) {
 	utils.SuccessResponse(ctx, "Password Reset Successfully", nil)
 }
 
+// ResendVerificationCode godoc
+// @Summary      Resend Verification Code
+// @Description  Resend email verification code
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        input body dto.ForgotPasswordRequest true "Email"
+// @Success      200  {object} utils.Response
+// @Failure      400  {object} utils.Response
+// @Router       /resend-verification [post]
+func (c *UserController) ResendVerificationCode(ctx *gin.Context) {
+	var input dto.ForgotPasswordRequest
+
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		utils.ErrorResponse(ctx, "Validation Failed", http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := c.service.ResendVerificationCode(input.Email); err != nil {
+		utils.ErrorResponse(ctx, "Request Failed", http.StatusBadRequest, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(ctx, "Verification Code Sent Successfully", nil)
+}
+
+// ResendResetPasswordCode godoc
+// @Summary      Resend Reset Password Code
+// @Description  Resend reset password code
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        input body dto.ForgotPasswordRequest true "Email"
+// @Success      200  {object} utils.Response
+// @Failure      400  {object} utils.Response
+// @Router       /resend-reset-code [post]
+func (c *UserController) ResendResetPasswordCode(ctx *gin.Context) {
+	var input dto.ForgotPasswordRequest
+
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		utils.ErrorResponse(ctx, "Validation Failed", http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := c.service.ResendResetPasswordCode(input.Email); err != nil {
+		utils.ErrorResponse(ctx, "Request Failed", http.StatusBadRequest, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(ctx, "Reset Code Sent Successfully", nil)
+}
+
 // Me godoc
 // @Summary      Get Current User
 // @Description  Get details of the currently logged-in user

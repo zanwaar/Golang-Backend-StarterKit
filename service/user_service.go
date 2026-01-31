@@ -15,6 +15,8 @@ type UserService interface {
 	VerifyEmail(req dto.VerifyEmailRequest) error
 	ForgotPassword(email string) error
 	ResetPassword(req dto.ResetPasswordRequest) error
+	ResendVerificationCode(email string) error
+	ResendResetPasswordCode(email string) error
 	GetUsers(filters map[string]interface{}, page, perPage int) (*utils.PaginationResult, error)
 }
 
@@ -151,4 +153,34 @@ func (s *userService) ResetPassword(req dto.ResetPasswordRequest) error {
 	user.ResetTokenExpiry = time.Time{}
 
 	return s.repo.Update(user)
+}
+
+func (s *userService) ResendVerificationCode(email string) error {
+	user, err := s.repo.FindByEmail(email)
+	if err != nil {
+		return errors.New("user not found")
+	}
+
+	if user.IsVerified {
+		return errors.New("email already verified")
+	}
+
+	code := utils.GenerateRandomCode(6)
+	user.VerificationCode = code
+
+	if err := s.repo.Update(user); err != nil {
+		return err
+	}
+
+	// Send email asynchronously
+	go func() {
+		_ = utils.SendVerificationEmail(user.Email, code)
+	}()
+
+	return nil
+}
+
+func (s *userService) ResendResetPasswordCode(email string) error {
+	// Functionally same as ForgotPassword
+	return s.ForgotPassword(email)
 }

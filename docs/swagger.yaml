@@ -404,6 +404,58 @@ paths:
       summary: Register User
       tags:
       - auth
+  /resend-reset-code:
+    post:
+      consumes:
+      - application/json
+      description: Resend reset password code
+      parameters:
+      - description: Email
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ForgotPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Resend Reset Password Code
+      tags:
+      - auth
+  /resend-verification:
+    post:
+      consumes:
+      - application/json
+      description: Resend email verification code
+      parameters:
+      - description: Email
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ForgotPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Resend Verification Code
+      tags:
+      - auth
   /reset-password:
     post:
       consumes:
