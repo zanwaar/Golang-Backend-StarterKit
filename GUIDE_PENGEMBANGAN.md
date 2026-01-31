@@ -292,3 +292,42 @@ make db-seed
 ```
 
 > **Catatan**: Selalu jalankan `make db-migrate` terlebih dahulu sebelum `make db-seed` untuk memastikan struktur tabel sudah siap.
+
+---
+
+## 8. Email Testing (MailHog)
+
+![MailHog Logo](docs/mailhog.png)
+
+Untuk mencobanya fitur pengiriman email di local (tanpa spamming email asli), gunakan **MailHog**.
+
+### Opsi 1: Menggunakan Docker (Recommended)
+Jika Docker Desktop sudah terinstall, cukup jalankan:
+```bash
+docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog
+```
+
+### Opsi 2: Manual (Mac/Homebrew)
+```bash
+brew install mailhog
+mailhog
+```
+
+### Opsi 3: Manual (Windows)
+1.  Download file `.exe` dari [GitHub Releases](https://github.com/mailhog/MailHog/releases).
+2.  Simpan di folder project dan jalankan via CMD/PowerShell:
+```bash
+./MailHog_windows_amd64.exe
+```
+
+### Konfigurasi .env
+Seting agar aplikasi mengirim email ke port MailHog:
+```env
+SMTP_HOST=localhost
+SMTP_PORT=1025
+SMTP_USER=test
+SMTP_PASSWORD=test
+```
+
+### Cara Cek Email
+Buka browser: [http://localhost:8025](http://localhost:8025)
