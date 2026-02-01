@@ -9,7 +9,7 @@ import (
 
 func SendVerificationEmail(toEmail, code string) error {
 	mailer := gomail.NewMessage()
-	mailer.SetHeader("From", "noreply@golang-backend.com")
+	mailer.SetHeader("From", config.AppConfig.SMTPUser)
 	mailer.SetHeader("To", toEmail)
 	mailer.SetHeader("Subject", "Email Verification Code")
 	mailer.SetBody("text/html", fmt.Sprintf("Your verification code is: <b>%s</b>", code))
@@ -26,7 +26,7 @@ func SendVerificationEmail(toEmail, code string) error {
 
 func SendResetPasswordEmail(toEmail, code string) error {
 	mailer := gomail.NewMessage()
-	mailer.SetHeader("From", "noreply@golang-backend.com")
+	mailer.SetHeader("From", config.AppConfig.SMTPUser)
 	mailer.SetHeader("To", toEmail)
 	mailer.SetHeader("Subject", "Reset Password Code")
 	mailer.SetBody("text/html", fmt.Sprintf("Your reset password code is: <b>%s</b>", code))
